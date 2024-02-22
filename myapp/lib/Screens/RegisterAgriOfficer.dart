@@ -16,8 +16,9 @@ class RegisterOfficer extends StatefulWidget {
   State<RegisterOfficer> createState() => _RegisterOfficer();
 }
 
+
 class _RegisterOfficer extends State<RegisterOfficer> {
-  final _formKey = GlobalKey<FormState>();
+    //final _formKey = GlobalKey<FormState>();
 
   TextEditingController email = TextEditingController();
   TextEditingController firstname = TextEditingController();
@@ -34,9 +35,7 @@ class _RegisterOfficer extends State<RegisterOfficer> {
     const String apiUrl =
         'https://bluebird-balanced-drum.ngrok-free.app/user/register'; // Replace 'your_api_url' with your actual API URL
 
-    // if(_formKey.currentState!.validate()){
-    //
-    // }
+    
 
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -94,20 +93,6 @@ class _RegisterOfficer extends State<RegisterOfficer> {
     }
   }
 
-  String? _validatePassword(String? value) {
-    if (value != passwordc.text) {
-      Fluttertoast.showToast(
-        msg: "Passwords do not match",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.transparent,
-        textColor: Colors.red,
-        fontSize: 16.0,
-      );
-      return "Password do not match";
-    }
-    return null;
-  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -175,6 +160,13 @@ class _RegisterOfficer extends State<RegisterOfficer> {
                   labelText: "Last Name",
                   prefixIcon: Icon(Icons.person),
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your first name';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -183,6 +175,19 @@ class _RegisterOfficer extends State<RegisterOfficer> {
                   labelText: "NIC",
                   prefixIcon: Icon(Icons.credit_card),
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your NIC';
+                  }
+                  // Regex for NIC validation
+                  RegExp regExp = RegExp(r'^[0-9]{9}[vVxX]$');
+
+                  if (!regExp.hasMatch(value)) { // Means if NIC is invalid
+                    return 'Please enter a valid NIC';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               TextFormField(
@@ -191,7 +196,22 @@ class _RegisterOfficer extends State<RegisterOfficer> {
                   labelText: "Email",
                   prefixIcon: Icon(Icons.email),
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an email';
+                  }
+                  // Regex for email validation
+                  String p = "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+";
+                  RegExp regExp = RegExp(p);
+
+                  if (regExp.hasMatch(value)) { // Means if email is valid
+                    return null;
+                  }
+                  return 'Please enter a valid email';
+                },
               ),
+
               const SizedBox(height: 20),
               TextFormField(
                 controller: passwordc,

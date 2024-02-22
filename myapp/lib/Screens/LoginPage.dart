@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-//provides encoders and decoders for converting between JSON and Dart objects.
-import 'dart:convert';
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;// Import http package for making HTTP requests
+import 'dart:convert';// Import 'dart:convert' for JSON decoding//provides encoders and decoders for converting between JSON and Dart objects.
 import 'HomePage.dart';
 import 'RegisterAgriOfficer.dart';
+
+String token= '';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -20,7 +20,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _login() async {
     const String apiUrl =
-        'https://bluebird-balanced-drum.ngrok-free.app/user/login'; // Replace 'your_api_url' with your actual API URL
+        'https://bluebird-balanced-drum.ngrok-free.app/user/login'; // API Url:Login
+
+    // POST request to the login API
     final response = await http.post(
       Uri.parse(apiUrl),
       headers: <String, String>{
@@ -32,14 +34,32 @@ class _LoginPageState extends State<LoginPage> {
       }),
     );
     if (!mounted) return;
+    //check response status code
     if (response.statusCode == 200) {
-      // Successful login
-      // Navigate to the home page
+      // Parse the JSON response
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      // Extract the role value from the JSON response
+      final int role = responseData['role'];
+      token=responseData['token'];
+      // Check the role value
+      if (role == 4) {
+        // Role is 4 (redirect to home page)
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
-    } else {
+    } else if(role!=4){
+        Fluttertoast.showToast(
+          msg: 'Invalid login',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.transparent,
+          textColor: Colors.red,
+          fontSize: 16.0,
+        );
+      }
+      }else{
       // Failed login
       // Show error message
       showDialog(
