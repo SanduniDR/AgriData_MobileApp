@@ -1,4 +1,4 @@
 
 class AppUrl{
-  static String baseurl ="http://127.0.0.1:5000";
+  static String baseurl ="'https://bluebird-balanced-drum.ngrok-free.app";
 }
