@@ -51,11 +51,12 @@ The **Ceylon AgriData** system follows a service-oriented multi-tier architectur
 
 ### Steps
 1. **Clone the repository:**
+   - Use the above listed repository links here.
    ```bash
    git clone REPOSITORY_LINK
    cd FOLDER_NAME
    
-2. **Install dependencies:**
+3. **Install dependencies:**
 - For the mobile app (Flutter):
     ```bash
     cd myapp
